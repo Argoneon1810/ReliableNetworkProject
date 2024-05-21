@@ -7,6 +7,10 @@ TagManager:
   - Bullet
   - protagonist
   - antagonist
+  - protagonist_t1
+  - antagonist_t1
+  - protagonist_p
+  - antagonist_p
   layers:
   - Default
   - TransparentFX

@@ -16,10 +16,14 @@ namespace RemoteTest
         [SerializeField] protected float angleThreshold = 1f;
         [SerializeField] protected Vector3 lastHeading;
 
-        public Vector3 velocity => rb.velocity;
-        public Vector3 angularVelocity => rb.angularVelocity;
-        public Vector3 position => rb.position;
-        public Quaternion rotation => rb.rotation;
+        public Vector3 Velocity { get => rb.velocity; private set => pv.RPC(nameof(SetVelocity), RpcTarget.AllBufferedViaServer, value); }
+        [PunRPC] void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
+        public Vector3 AngularVelocity { get => rb.angularVelocity; private set => pv.RPC(nameof(SetAngularVelocity), RpcTarget.AllBufferedViaServer, value); }
+        [PunRPC] void SetAngularVelocity(Vector3 angularVelocity) => rb.angularVelocity = angularVelocity;
+        public Vector3 Position { get => rb.position; private set => pv.RPC(nameof(SetPosition), RpcTarget.AllBufferedViaServer, value); }
+        [PunRPC] void SetPosition(Vector3 position) => rb.position = position;
+        public Quaternion Rotation { get => rb.rotation; private set => pv.RPC(nameof(SetRotation), RpcTarget.AllBufferedViaServer, value); }
+        [PunRPC] void SetRotation(Quaternion rotation) => rb.rotation = rotation;
 
         void Awake()
         {
@@ -84,7 +88,15 @@ namespace RemoteTest
         public virtual void Teleport(Vector3 position, Quaternion rotation)
         {
             if (!pv.IsMine) return;
-            pv.RPC(nameof(SyncTransform), RpcTarget.AllBuffered, position, rotation.eulerAngles);
+            Position = position;
+            Rotation = rotation;
+        }
+
+        public virtual void Stop()
+        {
+            if (!pv.IsMine) return;
+            Velocity = Vector3.zero;
+            AngularVelocity = Vector3.zero;
         }
 
         [PunRPC]
@@ -107,13 +119,5 @@ namespace RemoteTest
         [PunRPC]
         protected virtual void SyncTorque(Vector3 torque, ForceMode forceMode = ForceMode.Force)
             => rb.AddTorque(torque, forceMode);
-
-        [PunRPC]
-        protected virtual void SyncTransform(Vector3 position, Vector3 eulerRotation)
-        {
-            if (pv.IsMine) return;
-            transform.position = position;
-            transform.rotation = Quaternion.Euler(eulerRotation);
-        }
     }
 }

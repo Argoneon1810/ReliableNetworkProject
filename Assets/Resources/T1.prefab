@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 5603550395784408335}
   - component: {fileID: 1364701813391890337}
   - component: {fileID: 811827162034659515}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: T1
-  m_TagString: Untagged
+  m_TagString: protagonist
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pv: {fileID: 1364701813391890337}
   rb: {fileID: 5603550395784408335}
+  hstt: {fileID: 0}
   doDesyncProof: 0
   desyncCheckEvery: 2
   angleThreshold: 1

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
+using UnityEngine;
+using UnityEngine.Events;
 
 public class NetworkSpawner : MonoBehaviour
 {
@@ -14,8 +15,17 @@ public class NetworkSpawner : MonoBehaviour
 
     List<GameObject> SpawnedGameObjects = new List<GameObject>();
 
+    NetworkManager nm;
+
+    private void Start()
+    {
+        nm = NetworkManager.Instance;
+        nm.OnJoinedRoomEvents += Summon;
+    }
+
     internal void Summon()
     {
+        DebugLogger.Instance.Log("Summoning...");
         if (PhotonNetwork.IsMasterClient)
         {
             Spawn(ToSpawnPrefabsAtOriginGlobal, ToSpawnPrefabsPositionSpecificGlobal, PositionSpecifiersGlobal);

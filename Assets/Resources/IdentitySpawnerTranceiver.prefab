@@ -69,6 +69,8 @@ MonoBehaviour:
   - {fileID: 5603550395784408333, guid: 5e77dd8bbec5b884d80abd8755c079b4, type: 3}
   ifMasterT: {fileID: 0}
   ifClientT: {fileID: 0}
+  MasterTagName: protagonist_p
+  ClientTagName: antagonist_p
 --- !u!114 &4744641514945416370
 MonoBehaviour:
   m_ObjectHideFlags: 0

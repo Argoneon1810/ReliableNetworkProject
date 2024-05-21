@@ -50,6 +50,12 @@ MonoBehaviour:
   - Tic
   - Toc
   - Sync
+  - SetAngularVelocity
+  - SetPosition
+  - SetRotation
+  - SetVelocity
+  - StartSimulation
+  - StopSimulation
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

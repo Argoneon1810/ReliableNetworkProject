@@ -8,10 +8,11 @@ namespace RemoteTest
     {
         [SerializeField] List<GameObject> ifMaster, ifClient;
         [SerializeField] Transform ifMasterT, ifClientT;
+        [SerializeField] string MasterTagName = "protagonist", ClientTagName = "antagonist";
         private void Start()
         {
-            ifMasterT = GameObject.FindGameObjectWithTag("protagonist").transform;
-            ifClientT = GameObject.FindGameObjectWithTag("antagonist").transform;
+            ifMasterT = GameObject.FindGameObjectWithTag(MasterTagName).transform;
+            ifClientT = GameObject.FindGameObjectWithTag(ClientTagName).transform;
             List<GameObject> instantiated = new List<GameObject>();
             if (PhotonNetwork.IsMasterClient)
             {

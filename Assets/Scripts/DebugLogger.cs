@@ -21,7 +21,7 @@ public class DebugLogger : MonoBehaviour
     private void LogInternal(string message, Action<string> loggingMethod)
     {
         loggingMethod(message);
-        textbox.text = message;
+        if(textbox) textbox.text = message;
     }
     public void Log(string message) => LogInternal(message, Debug.Log);
     public void Log(object message) => LogInternal(message.ToString(), Debug.Log);

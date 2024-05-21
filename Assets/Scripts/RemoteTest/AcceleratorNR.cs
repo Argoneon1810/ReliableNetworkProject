@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RemoteTest
 {
-    public class DebugAccelerator : MonoBehaviour
+    public class AcceleratorNR : MonoBehaviour
     {
         [SerializeField] NetworkedRigidbody rb;
         [SerializeField] float multiplier = 1;
@@ -14,7 +14,7 @@ namespace RemoteTest
 
         void Update()
         {
-            rb.AddForce(rb.velocity * multiplier);
+            rb.AddForce(rb.Velocity * multiplier);
         }
     }
 }
