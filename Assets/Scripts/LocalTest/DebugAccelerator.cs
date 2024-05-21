@@ -1,20 +1,20 @@
 using UnityEngine;
 
-namespace LocalTest
+namespace RemoteTest
 {
     public class DebugAccelerator : MonoBehaviour
     {
-        [SerializeField] RigidbodySender rbs;
-        [SerializeField] Vector3 force;
+        [SerializeField] NetworkedRigidbody rb;
+        [SerializeField] float multiplier = 1;
 
         void Start()
         {
-            if (!rbs) rbs = GetComponent<RigidbodySender>();
+            if (!rb) rb = GetComponent<NetworkedRigidbody>();
         }
 
         void Update()
         {
-            rbs.AddForce(force);
+            rb.AddForce(rb.velocity * multiplier);
         }
     }
 }

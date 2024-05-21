@@ -16,9 +16,8 @@ namespace RemoteTest
             if (PhotonNetwork.IsMasterClient)
             {
                 DebugLogger.Instance.Log("Summoning Master Client");
-                int i = 0;
                 foreach(GameObject go in ifMaster)
-                    instantiated.Add(PhotonNetwork.Instantiate(go.name, ifMasterT.position + new Vector3(0,i+=2,0), ifMasterT.rotation));
+                    instantiated.Add(PhotonNetwork.Instantiate(go.name, ifMasterT.position, ifMasterT.rotation));
             }
             else
             {

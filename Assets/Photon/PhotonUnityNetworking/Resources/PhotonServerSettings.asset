@@ -46,6 +46,10 @@ MonoBehaviour:
   - SyncTransform
   - AmIDesynced
   - YouAreDesynced
+  - SetHandShakeTime
+  - Tic
+  - Toc
+  - Sync
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
