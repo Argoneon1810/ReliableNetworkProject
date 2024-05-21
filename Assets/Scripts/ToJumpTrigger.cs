@@ -15,7 +15,7 @@ public class ToJumpTrigger : MonoBehaviour
             rb.position = antagonistDestination.position;
             rb.rotation = antagonistDestination.rotation;
         }
-        else
+        else if(other.tag == protagonistTag)
         {
             NetworkedRigidbody nrb = other.gameObject.GetComponent<NetworkedRigidbody>();
             nrb.Stop();

@@ -17,13 +17,13 @@ namespace RemoteTest
         [SerializeField] protected Vector3 lastHeading;
 
         public Vector3 Velocity { get => rb.velocity; private set => pv.RPC(nameof(SetVelocity), RpcTarget.AllBufferedViaServer, value); }
-        [PunRPC] void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
+        [PunRPC] protected void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
         public Vector3 AngularVelocity { get => rb.angularVelocity; private set => pv.RPC(nameof(SetAngularVelocity), RpcTarget.AllBufferedViaServer, value); }
-        [PunRPC] void SetAngularVelocity(Vector3 angularVelocity) => rb.angularVelocity = angularVelocity;
+        [PunRPC] protected void SetAngularVelocity(Vector3 angularVelocity) => rb.angularVelocity = angularVelocity;
         public Vector3 Position { get => rb.position; private set => pv.RPC(nameof(SetPosition), RpcTarget.AllBufferedViaServer, value); }
-        [PunRPC] void SetPosition(Vector3 position) => rb.position = position;
+        [PunRPC] protected void SetPosition(Vector3 position) => rb.position = position;
         public Quaternion Rotation { get => rb.rotation; private set => pv.RPC(nameof(SetRotation), RpcTarget.AllBufferedViaServer, value); }
-        [PunRPC] void SetRotation(Quaternion rotation) => rb.rotation = rotation;
+        [PunRPC] protected void SetRotation(Quaternion rotation) => rb.rotation = rotation;
 
         void Awake()
         {

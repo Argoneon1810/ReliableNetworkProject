@@ -2,19 +2,17 @@ using UnityEngine;
 
 namespace RemoteTest
 {
-    public class AcceleratorNR : MonoBehaviour
+    public class AcceleratorNR : Accelerator<NetworkedRigidbody>, IRigidbodyAdapter
     {
-        [SerializeField] NetworkedRigidbody rb;
-        [SerializeField] float multiplier = 1;
-
-        void Start()
+        protected override void SetAdapter()
         {
-            if (!rb) rb = GetComponent<NetworkedRigidbody>();
+            rbAdapter = this;
         }
 
-        void Update()
-        {
-            rb.AddForce(rb.Velocity * multiplier);
-        }
+        void IRigidbodyAdapter.AddForce(Vector3 velocity)
+            => rb.AddForce(velocity);
+
+        Vector3 IRigidbodyAdapter.GetVelocity()
+            => rb.Velocity;
     }
 }
