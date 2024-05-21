@@ -4373,8 +4373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69fc7147a198cf341b658734ee20b71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  antagonistDestination: {fileID: 0}
-  protagonistDestination: {fileID: 0}
+  antagonistDestination: {fileID: 909744548}
+  protagonistDestination: {fileID: 845553018}
+  antagonistTag: antagonist
+  protagonistTag: protagonist
 --- !u!1 &1304380312
 GameObject:
   m_ObjectHideFlags: 0
