@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using NRB = NetworkedRigidbody.NetworkedRigidbody;
+using NRB = NetworkedRigidbody;
 
 public class ForceField : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class ForceField : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.CompareTag(protagonistTag))
-            fnAddForceProta = other.gameObject.GetComponent<NRB>().AddForce;
+            fnAddForceProta = other.gameObject.GetComponent<NRB.NetworkedRigidbody>().AddForce;
         else if (other.transform.CompareTag(antagonistTag))
             fnAddForceAnta = other.attachedRigidbody.AddForce;
     }

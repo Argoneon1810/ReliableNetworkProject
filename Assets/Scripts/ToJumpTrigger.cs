@@ -1,5 +1,5 @@
 using UnityEngine;
-using NRB = NetworkedRigidbody.NetworkedRigidbody;
+using NRB = NetworkedRigidbody;
 
 public class ToJumpTrigger : MonoBehaviour
 {
@@ -17,7 +17,7 @@ public class ToJumpTrigger : MonoBehaviour
         }
         else if(other.tag == protagonistTag)
         {
-            NRB nrb = other.gameObject.GetComponent<NRB>();
+            NRB.NetworkedRigidbody nrb = other.gameObject.GetComponent<NRB.NetworkedRigidbody>();
             nrb.Stop();
             nrb.Teleport(protagonistDestination.position, protagonistDestination.rotation);
         }

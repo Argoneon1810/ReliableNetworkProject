@@ -58,6 +58,11 @@ MonoBehaviour:
   - StopSimulation
   - SyncGravity
   - StopAcceleration
+  - SyncParenting
+  - SyncParentingToChild
+  - SyncPauseSimulation
+  - SyncKinematics
+  - SyncSyncInterval
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

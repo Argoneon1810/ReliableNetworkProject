@@ -17,6 +17,7 @@ namespace NetworkedRigidbody
         #region Desync Proofing
         [SerializeField] protected bool doDesyncProof = false;
         [SerializeField] protected float desyncCheckEvery = 3;
+        float lastDesyncCheckInteval = 3;
         protected float accumulatedDeltaTime = 0;
         #endregion
 
@@ -27,6 +28,7 @@ namespace NetworkedRigidbody
         #endregion
 
         #region RPC Compatible Getters
+
         public Vector3 Velocity { get => rb.velocity; private set => pv.RPC(nameof(SetVelocity), RpcTarget.AllBufferedViaServer, value); }
         [PunRPC] protected void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
         public Vector3 AngularVelocity { get => rb.angularVelocity; private set => pv.RPC(nameof(SetAngularVelocity), RpcTarget.AllBufferedViaServer, value); }
@@ -121,6 +123,20 @@ namespace NetworkedRigidbody
             TryInterrupt(new Action<bool>(delegate (bool targetState) {
                 pv.RPC(nameof(SyncGravity), RpcTarget.AllBufferedViaServer, targetState);
             }), targetState);
+        public virtual void SetKinematics(bool targetState) =>
+            TryInterrupt(new Action<bool>(delegate (bool targetState) {
+                pv.RPC(nameof(SyncKinematics), RpcTarget.AllBufferedViaServer, targetState);
+            }), targetState);
+        public virtual void ParentToPhotonView(PhotonView view) => ParentToPhotonView(view.ViewID);
+        /// <summary>
+        /// Parent to the other transform that owns PhotonView
+        /// This restriction is to ensure remote and local are both parented into same object
+        /// </summary>
+        /// <param name="id">set to -1 to unparent. otherwise, set it to photonView.ViewID</param>
+        public virtual void ParentToPhotonView(int id) =>
+            TryInterrupt(new Action<int>(delegate (int id) {
+                pv.RPC(nameof(SyncParenting), RpcTarget.AllBufferedViaServer, id);
+            }), id);
         public void TryInterrupt<T>(Action<T> doOnInterruptable, T param)
         {
             if (!pv.IsMine) return;
@@ -143,6 +159,14 @@ namespace NetworkedRigidbody
                 Position = position;
                 Rotation = rotation;
             }), position, rotation);
+        public virtual void ParentToPhotonViewChild(int id, string name) =>
+            TryInterrupt(new Action<int, string>(delegate(int id, string name) {
+                pv.RPC(nameof(SyncParentingToChild), RpcTarget.AllBufferedViaServer, id, name);
+            }), id, name);
+        public virtual void SetSyncInterval(float interval, bool reset = false) =>
+            TryInterrupt(new Action<float, bool>(delegate (float interval, bool reset) {
+                pv.RPC(nameof(SyncSyncInterval), RpcTarget.AllBufferedViaServer, interval, reset);
+            }), interval, reset);
         public void TryInterrupt<T1, T2>(Action<T1, T2> doOnInterruptable, T1 param1, T2 param2)
         {
             if (!pv.IsMine) return;
@@ -186,6 +210,59 @@ namespace NetworkedRigidbody
         [PunRPC]
         protected virtual void SyncGravity(bool targetState)
             => rb.useGravity = targetState;
+
+        [PunRPC]
+        protected virtual void SyncKinematics(bool targetState)
+            => rb.isKinematic = targetState;
+
+        [PunRPC]
+        protected virtual void SyncParenting(int pvid)
+        {
+            if(pvid == -1)
+            {
+                transform.SetParent(transform.root);
+                return;
+            }
+            PhotonView[] views = FindObjectsOfType<PhotonView>();
+            PhotonView target = null;
+            foreach(PhotonView temp in views)
+            {
+                if(temp.ViewID == pvid)
+                {
+                    target = temp;
+                    break;
+                }
+            }
+            transform.SetParent(target.transform);
+        }
+
+        [PunRPC]
+        protected virtual void SyncParentingToChild(int pvid, string name)
+        {
+            PhotonView[] views = FindObjectsOfType<PhotonView>();
+            PhotonView target = null;
+            foreach (PhotonView temp in views)
+            {
+                if (temp.ViewID == pvid)
+                {
+                    target = temp;
+                    break;
+                }
+            }
+            transform.SetParent(target.transform.Find(name));
+        }
+
+        [PunRPC]
+        protected virtual void SyncSyncInterval(float interval, bool reset = false)
+        {
+            if(reset)
+            {
+                desyncCheckEvery = lastDesyncCheckInteval;
+                return;
+            }
+            lastDesyncCheckInteval = desyncCheckEvery;
+            desyncCheckEvery = interval;
+        }
         #endregion
     }
 }

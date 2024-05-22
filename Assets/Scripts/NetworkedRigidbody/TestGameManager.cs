@@ -46,6 +46,22 @@ namespace NetworkedRigidbody
             pv.RPC(nameof(StartSimulation), RpcTarget.AllBufferedViaServer);
         }
 
+        public void OnClickParenting()
+        {
+            NetworkedRigidbody nrb = FindObjectOfType<NetworkedRigidbody>();
+            //nrb.SetSyncInterval(1f/PhotonNetwork.SerializationRate);
+            nrb.SetKinematics(true);
+            nrb.ParentToPhotonView(pv);
+        }
+
+        public void OnClickUnparenting()
+        {
+            NetworkedRigidbody nrb = FindObjectOfType<NetworkedRigidbody>();
+            //nrb.SetSyncInterval(1, true);
+            nrb.SetKinematics(false);
+            nrb.ParentToPhotonView(-1);
+        }
+
         void StopTime()
         {
             pv.RPC(nameof(StopSimulation), RpcTarget.AllBufferedViaServer);

@@ -1,5 +1,5 @@
 using UnityEngine;
-using NRB = NetworkedRigidbody.NetworkedRigidbody;
+using NRB = NetworkedRigidbody;
 
 public class DisableGravity : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class DisableGravity : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.CompareTag(protagonistTag))
-            other.gameObject.GetComponent<NRB>().UseGravity(false);
+            other.gameObject.GetComponent<NRB.NetworkedRigidbody>().UseGravity(false);
         else if (other.transform.CompareTag(antagonistTag))
             other.attachedRigidbody.useGravity = false;
     }
