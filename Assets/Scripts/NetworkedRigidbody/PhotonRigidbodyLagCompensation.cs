@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class PhotonRigidbodyLagCompensation : MonoBehaviour, IPunObservable
     {

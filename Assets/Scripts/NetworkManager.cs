@@ -1,5 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
+using NetworkedRigidbody;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
@@ -71,5 +73,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         myState = CurrentNetworkState.InRoom;
         DebugLogger.Instance.Log("Room Joined");
         OnJoinedRoomEvents?.Invoke();
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if (newPlayer == PhotonNetwork.LocalPlayer) return;
+        if((PhotonNetwork.LocalPlayer.TagObject as GameObject).TryGetComponent(out IInvokeToSync iits))
+            iits.InvokeProperties();
     }
 }

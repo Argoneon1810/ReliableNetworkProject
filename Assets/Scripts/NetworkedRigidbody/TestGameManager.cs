@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class TestGameManager : MonoBehaviour
     {

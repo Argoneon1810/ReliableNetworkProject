@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class NetworkedRigidbodyIPunObservable : NetworkedRigidbody, IPunObservable
     {

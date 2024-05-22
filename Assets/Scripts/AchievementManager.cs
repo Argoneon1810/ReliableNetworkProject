@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using RemoteTest;
+using NRB = NetworkedRigidbody.NetworkedRigidbody;
 
 public class AchievementManager : MonoBehaviour
 {
@@ -31,7 +31,7 @@ public class AchievementManager : MonoBehaviour
     {
         if (prefabsfound) return;
         PhotonRigidbodyView prbv = FindObjectOfType<PhotonRigidbodyView>();
-        NetworkedRigidbody nrb = FindObjectOfType<NetworkedRigidbody>();
+        NRB nrb = FindObjectOfType<NRB>();
         if (!prbv || !nrb) return;
         prefabsfound = true;
         prbv.OnNetworkCall += AntaNetworkCall;

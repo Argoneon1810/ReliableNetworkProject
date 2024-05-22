@@ -1,5 +1,5 @@
 using UnityEngine;
-using RemoteTest;
+using NRB = NetworkedRigidbody.NetworkedRigidbody;
 
 public class ToJumpTrigger : MonoBehaviour
 {
@@ -17,7 +17,7 @@ public class ToJumpTrigger : MonoBehaviour
         }
         else if(other.tag == protagonistTag)
         {
-            NetworkedRigidbody nrb = other.gameObject.GetComponent<NetworkedRigidbody>();
+            NRB nrb = other.gameObject.GetComponent<NRB>();
             nrb.Stop();
             nrb.Teleport(protagonistDestination.position, protagonistDestination.rotation);
         }

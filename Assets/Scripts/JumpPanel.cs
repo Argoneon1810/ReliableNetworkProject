@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using RemoteTest;
+using NRB = NetworkedRigidbody.NetworkedRigidbody;
 
 public class JumpPanel : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class JumpPanel : MonoBehaviour
     {
         Action<Vector3, ForceMode> fnAddForce = null;
         if (collision.transform.CompareTag(protagonistTag))
-            fnAddForce = collision.gameObject.GetComponent<NetworkedRigidbody>().AddForce;
+            fnAddForce = collision.gameObject.GetComponent<NRB>().AddForce;
         else if (collision.transform.CompareTag(antagonistTag))
             fnAddForce = fnAddForce = collision.rigidbody.AddForce;
         if(fnAddForce != null) fnAddForce(dir * forceMultiplier, ForceMode.Impulse);

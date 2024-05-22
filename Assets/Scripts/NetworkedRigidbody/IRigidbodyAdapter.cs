@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public interface IRigidbodyAdapter
     {

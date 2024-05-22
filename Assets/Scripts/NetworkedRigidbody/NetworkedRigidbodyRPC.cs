@@ -1,13 +1,13 @@
 using Photon.Pun;
 using UnityEngine;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class NetworkedRigidbodyRPC : NetworkedRigidbody
     {
-        protected override void DoOnUpdate()
+        protected override void DoOnEveryTick()
         {
-            base.DoOnUpdate();
+            base.DoOnEveryTick();
             if (!pv.IsMine) return;
             DirectionChangeDetector();
         }

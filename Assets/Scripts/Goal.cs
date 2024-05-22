@@ -1,4 +1,4 @@
-using RemoteTest;
+using NetworkedRigidbody;
 using UnityEngine;
 
 public class Goal : MonoBehaviour

@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class IdentitySpawner : MonoBehaviour
     {

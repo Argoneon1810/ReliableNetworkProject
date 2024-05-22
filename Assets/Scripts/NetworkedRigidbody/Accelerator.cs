@@ -3,7 +3,7 @@ using UnityEngine;
 
 using Photon.Pun;
 
-namespace RemoteTest
+namespace NetworkedRigidbody
 {
     public class Accelerator<T> : MonoBehaviour where T : Component
     {
