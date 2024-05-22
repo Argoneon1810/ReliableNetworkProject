@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
@@ -17,6 +18,9 @@ public class NetworkSpawner : MonoBehaviour
     [SerializeField] List<Transform> PositionSpecifiersLocal = new List<Transform>();
 
     List<GameObject> SpawnedGameObjects = new List<GameObject>();
+
+    GameObject hstt;
+    [SerializeField] GameObject HandShakeTimeTracerPrefab;
 
     NetworkManager nm;
 
@@ -40,6 +44,7 @@ public class NetworkSpawner : MonoBehaviour
         DebugLogger.Instance.Log("Summoning...");
         if (PhotonNetwork.IsMasterClient)
         {
+            hstt = PhotonNetwork.Instantiate(HandShakeTimeTracerPrefab.name, Vector3.zero, Quaternion.identity);
             Spawn(ToSpawnPrefabsAtOriginGlobal, ToSpawnPrefabsPositionSpecificGlobal, PositionSpecifiersGlobal);
             Spawn(ToSpawnPrefabsAtOriginLocal, ToSpawnPrefabsPositionSpecificLocal, PositionSpecifiersLocal);
         }
@@ -74,5 +79,6 @@ public class NetworkSpawner : MonoBehaviour
     {
         for (int i = SpawnedGameObjects.Count - 1; i >= 0; --i)
             PhotonNetwork.Destroy(SpawnedGameObjects[i]);
+        PhotonNetwork.Destroy(hstt);
     }
 }

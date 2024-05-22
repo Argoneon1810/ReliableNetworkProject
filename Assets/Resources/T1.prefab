@@ -153,8 +153,8 @@ MonoBehaviour:
   pv: {fileID: 1364701813391890337}
   rb: {fileID: 5603550395784408335}
   hstt: {fileID: 0}
-  doDesyncProof: 0
-  desyncCheckEvery: 2
+  doDesyncProof: 1
+  desyncCheckEvery: 1
   angleThreshold: 1
   lastHeading: {x: 0, y: 0, z: 0}
   bCompensate: 1
