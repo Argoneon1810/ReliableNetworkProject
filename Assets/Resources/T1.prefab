@@ -147,14 +147,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5603550395784408333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e55b8af002265f54eadd00f98bb4644d, type: 3}
+  m_Script: {fileID: 11500000, guid: db116567c4e6dfe49ba9f794239b0483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 1364701813391890337}
   rb: {fileID: 5603550395784408335}
   hstt: {fileID: 0}
+  bCompensate: 1
   doDesyncProof: 1
   desyncCheckEvery: 1
   angleThreshold: 1
   lastHeading: {x: 0, y: 0, z: 0}
-  bCompensate: 1

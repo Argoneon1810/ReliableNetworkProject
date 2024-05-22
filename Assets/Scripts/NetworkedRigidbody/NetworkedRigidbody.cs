@@ -5,22 +5,28 @@ using UnityEngine.Events;
 
 namespace NetworkedRigidbody
 {
-    public class NetworkedRigidbody : MonoBehaviour, IStateMachine, IPunInstantiateMagicCallback, IInvokeToSync
+    public class NetworkedRigidbody : MonoBehaviour, IStateMachine, IInvokeToSync, IPunInstantiateMagicCallback
     {
+        #region Fields
         [SerializeField] protected PhotonView pv;
         [SerializeField] protected Rigidbody rb;
         [SerializeField] protected HandShakeTimeTracer hstt;
-
-        [SerializeField] protected bool doDesyncProof = false;
-        [SerializeField] protected float desyncCheckEvery = 3;
-        protected float accumulatedDeltaTime = 0;
-
-        [SerializeField] protected float angleThreshold = 1f;
-        [SerializeField] protected Vector3 lastHeading;
-
         [SerializeField] protected bool bCompensate;
         public UnityAction OnNetworkCall;
 
+        #region Desync Proofing
+        [SerializeField] protected bool doDesyncProof = false;
+        [SerializeField] protected float desyncCheckEvery = 3;
+        protected float accumulatedDeltaTime = 0;
+        #endregion
+
+        #region Direction Change Detection
+        [SerializeField] protected float angleThreshold = 1f;
+        [SerializeField] protected Vector3 lastHeading;
+        #endregion
+        #endregion
+
+        #region RPC Compatible Getters
         public Vector3 Velocity { get => rb.velocity; private set => pv.RPC(nameof(SetVelocity), RpcTarget.AllBufferedViaServer, value); }
         [PunRPC] protected void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
         public Vector3 AngularVelocity { get => rb.angularVelocity; private set => pv.RPC(nameof(SetAngularVelocity), RpcTarget.AllBufferedViaServer, value); }
@@ -29,14 +35,20 @@ namespace NetworkedRigidbody
         [PunRPC] protected void SetPosition(Vector3 position) => rb.position = position;
         public Quaternion Rotation { get => rb.rotation; private set => pv.RPC(nameof(SetRotation), RpcTarget.AllBufferedViaServer, value); }
         [PunRPC] protected void SetRotation(Quaternion rotation) => rb.rotation = rotation;
+        #endregion
 
         #region Initialization State
         void Awake() => Init();
         public void Init()
         {
             if (!pv) pv = GetComponent<PhotonView>();
+            if (!pv)
+                throw new Exception("This GameObject is not PhotonView. Please attach one and put it in ./Assets/Resources as prefab.");
             if (!rb) rb = GetComponent<Rigidbody>();
+            if (!rb) rb = gameObject.AddComponent<Rigidbody>();
             if (!hstt) hstt = HandShakeTimeTracer.Instance;
+            if (!hstt)
+                throw new Exception("You need a HandShakeTimeTracer object in your scene. Please Instantiate one, or put one in the scene manually.");
             lastHeading = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         }
 
@@ -58,7 +70,9 @@ namespace NetworkedRigidbody
         {
             if (!pv.IsMine) return;
             if (doDesyncProof) DesyncProof();
+            DirectionChangeDetector();
         }
+
         protected virtual void DesyncProof()
         {
             if (accumulatedDeltaTime > desyncCheckEvery)
@@ -68,6 +82,17 @@ namespace NetworkedRigidbody
                 pv.RPC(nameof(Sync), RpcTarget.AllBuffered, rb.velocity, rb.angularVelocity, transform.position, transform.rotation.eulerAngles);
             }
             accumulatedDeltaTime += Time.deltaTime;
+        }
+
+        protected virtual void DirectionChangeDetector()
+        {
+            float deg = Vector3.Angle(lastHeading, rb.velocity);
+            if (deg > angleThreshold)
+            {
+                lastHeading = rb.velocity;
+                pv.RPC(nameof(Sync), RpcTarget.AllBuffered, rb.velocity, rb.angularVelocity, transform.position, transform.rotation.eulerAngles);
+                OnNetworkCall?.Invoke();
+            }
         }
         #endregion
 
@@ -162,6 +187,5 @@ namespace NetworkedRigidbody
         protected virtual void SyncGravity(bool targetState)
             => rb.useGravity = targetState;
         #endregion
-
     }
 }

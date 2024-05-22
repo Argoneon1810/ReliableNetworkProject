@@ -5,6 +5,7 @@ namespace NetworkedRigidbody
 {
     public class NetworkedRigidbodyIPunObservable : NetworkedRigidbody, IPunObservable
     {
+        protected override void DirectionChangeDetector() { }   //Do nothing, as it has to be done in OnPhotonSerializeView
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
