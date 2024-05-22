@@ -5,6 +5,9 @@ using UnityEngine.Events;
 
 public class NetworkSpawner : MonoBehaviour
 {
+    private static NetworkSpawner instance;
+    public static NetworkSpawner Instance => instance;
+
     [SerializeField] List<GameObject> ToSpawnPrefabsAtOriginGlobal = new List<GameObject>();
     [SerializeField] List<GameObject> ToSpawnPrefabsPositionSpecificGlobal = new List<GameObject>();
     [SerializeField] List<Transform> PositionSpecifiersGlobal = new List<Transform>();
@@ -16,6 +19,15 @@ public class NetworkSpawner : MonoBehaviour
     List<GameObject> SpawnedGameObjects = new List<GameObject>();
 
     NetworkManager nm;
+
+    public UnityAction OnPostSpawn;
+
+    private void Awake()
+    {
+        if(instance)
+            return;
+        instance = this;
+    }
 
     private void Start()
     {
@@ -32,6 +44,7 @@ public class NetworkSpawner : MonoBehaviour
             Spawn(ToSpawnPrefabsAtOriginLocal, ToSpawnPrefabsPositionSpecificLocal, PositionSpecifiersLocal);
         }
         else Spawn(ToSpawnPrefabsAtOriginLocal, ToSpawnPrefabsPositionSpecificLocal, PositionSpecifiersLocal);
+        OnPostSpawn?.Invoke();
     }
 
     void Spawn(List<GameObject> origin, List<GameObject> pspec, List<Transform> p)

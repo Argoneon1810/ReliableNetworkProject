@@ -1,33 +1,41 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.IO;
+using System.Text;
+using System;
 
 namespace RemoteTest
 {
     public class TestGameManager : MonoBehaviour
     {
-        NetworkManager nm;
+        private static TestGameManager instance;
+        public static TestGameManager Instance => instance;
+        [SerializeField] NetworkSpawner spawner;
         [SerializeField] Button BtnSimulate;
         [SerializeField] PhotonView pv;
         bool bCanSimulate = false;
-        bool bClicked = false;
+
+        private void Awake()
+        {
+            if(instance)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            instance = this;
+        }
 
         private void Start()
         {
-            nm = NetworkManager.Instance;
-            nm.OnJoinedRoomEvents += StopTime;
+            PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate = 0;
+            if (!spawner) spawner = NetworkSpawner.Instance;
             if (!pv) pv = GetComponent<PhotonView>();
+            spawner.OnPostSpawn += StopTime;
         }
 
         private void Update()
         {
-            if(bClicked.AsTrigger())
-            {
-                DebugLogger.Instance.Log("Dispatched");
-                Time.timeScale = 0.01f;
-                pv.RPC(nameof(StartSimulation), RpcTarget.AllBufferedViaServer);
-            }
-            if (!(nm.MyState == NetworkManager.CurrentNetworkState.InRoom)) return;
             if (!bCanSimulate) return;
             BtnSimulate.interactable = true;
         }
@@ -35,7 +43,7 @@ namespace RemoteTest
         public void OnClick()
         {
             DebugLogger.Instance.Log("Clicked");
-            bClicked = true;
+            pv.RPC(nameof(StartSimulation), RpcTarget.AllBufferedViaServer);
         }
 
         void StopTime()
@@ -56,6 +64,28 @@ namespace RemoteTest
         {
             Time.timeScale = 0;
             bCanSimulate = true;
+        }
+
+        internal void ReportGameFinished()
+        {
+            string extension = ".json";
+            string path = Application.dataPath + "/Record_" + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_');
+            bool unsaved = true, useNumbering = false;
+            int i = 1;
+            while(unsaved)
+            {
+                try
+                {
+                    using (BinaryWriter bw = new BinaryWriter(new FileStream(useNumbering ? path + string.Format(" ({0})", i) + extension : path + extension, FileMode.CreateNew)))
+                        bw.Write(AchievementManager.Instance.RequestRecords());
+                    unsaved = false;
+                }
+                catch (IOException e)
+                {
+                    useNumbering = true;
+                    i++;
+                }
+            }
         }
     }
 }

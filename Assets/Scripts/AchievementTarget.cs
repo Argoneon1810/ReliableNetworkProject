@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AchievementTarget : MonoBehaviour
@@ -15,7 +13,7 @@ public class AchievementTarget : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (!collision.gameObject.CompareTag(shouldReactToTag)) return;
-        manager.Report(shouldReactToTag, index);
+        manager.Report(shouldReactToTag, collision.transform.position);
         Destroy(this);
     }
 }

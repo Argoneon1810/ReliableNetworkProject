@@ -159,6 +159,7 @@ MonoBehaviour:
   desyncCheckEvery: 2
   angleThreshold: 5
   lastHeading: {x: 0, y: 0, z: 0}
+  bCompensate: 1
 --- !u!114 &-3852149875441857598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,3 +174,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: -4665256710300295183}
   multiplier: 0.3
+  pv: {fileID: 0}

@@ -21,7 +21,7 @@ public class JumpPanel : MonoBehaviour
         if (collision.transform.CompareTag(protagonistTag))
             fnAddForce = collision.gameObject.GetComponent<NetworkedRigidbody>().AddForce;
         else if (collision.transform.CompareTag(antagonistTag))
-            fnAddForce = collision.rigidbody.AddForce;
-        if (fnAddForce != null) fnAddForce(dir * forceMultiplier, ForceMode.Impulse);
+            fnAddForce = fnAddForce = collision.rigidbody.AddForce;
+        if(fnAddForce != null) fnAddForce(dir * forceMultiplier, ForceMode.Impulse);
     }
 }

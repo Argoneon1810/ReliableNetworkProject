@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 namespace RemoteTest
@@ -7,6 +8,19 @@ namespace RemoteTest
         protected override void SetAdapter()
         {
             rbAdapter = this;
+        }
+
+        public override void Stop()
+        {
+            if (!pv.IsMine) return;
+            pv.RPC(nameof(StopAcceleration), RpcTarget.AllBufferedViaServer);
+        }
+
+        [PunRPC]
+        protected override void StopAcceleration()
+        {
+            enabled = false;
+            rb.Stop();
         }
 
         void IRigidbodyAdapter.AddForce(Vector3 velocity)

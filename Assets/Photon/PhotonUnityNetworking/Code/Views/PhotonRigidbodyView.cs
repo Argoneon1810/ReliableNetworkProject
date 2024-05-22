@@ -12,6 +12,7 @@
 namespace Photon.Pun
 {
     using UnityEngine;
+    using UnityEngine.Events;
 
 
     [RequireComponent(typeof(Rigidbody))]
@@ -37,6 +38,8 @@ namespace Photon.Pun
         [HideInInspector]
         public float m_TeleportIfDistanceGreaterThan = 3.0f;
 
+        public UnityAction OnNetworkCall;
+
         public void Awake()
         {
             this.m_Body = GetComponent<Rigidbody>();
@@ -58,6 +61,7 @@ namespace Photon.Pun
         {
             if (stream.IsWriting)
             {
+                OnNetworkCall?.Invoke();
                 stream.SendNext(this.m_Body.position);
                 stream.SendNext(this.m_Body.rotation);
 

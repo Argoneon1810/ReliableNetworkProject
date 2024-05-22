@@ -9,6 +9,7 @@ namespace RemoteTest
         {
             if (stream.IsWriting)
             {
+                OnNetworkCall?.Invoke();
                 if (Vector3.Angle(lastHeading, rb.velocity) > angleThreshold)
                 {
                     lastHeading = rb.velocity;

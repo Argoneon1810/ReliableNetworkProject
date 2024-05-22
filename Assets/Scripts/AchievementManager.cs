@@ -4,6 +4,8 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using RemoteTest;
 
 public class AchievementManager : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class AchievementManager : MonoBehaviour
     public static AchievementManager Instance => instance;
     [SerializeField] Records records;
     [SerializeField] string antagonistTag = "antagonist", protagonistTag = "protagonist";
+
+    bool prefabsfound = false;
 
     void Awake()
     {
@@ -23,13 +27,29 @@ public class AchievementManager : MonoBehaviour
         records = new Records();
     }
 
-    internal void Report(string shouldReactToTag, int index)
+    private void Update()
     {
-        if(shouldReactToTag == antagonistTag)
-            records.AddAntaRecord(Time.time);
-        else if (shouldReactToTag == protagonistTag)
-            records.AddProtaRecord(Time.time);
+        if (prefabsfound) return;
+        PhotonRigidbodyView prbv = FindObjectOfType<PhotonRigidbodyView>();
+        NetworkedRigidbody nrb = FindObjectOfType<NetworkedRigidbody>();
+        if (!prbv || !nrb) return;
+        prefabsfound = true;
+        prbv.OnNetworkCall += AntaNetworkCall;
+        nrb.OnNetworkCall += ProtaNetworkCall;
     }
+
+    internal void Report(string shouldReactToTag, Vector3 pos)
+    {
+        if (shouldReactToTag == protagonistTag)
+            records.AddProtaRecord(Time.time, pos); 
+        else if (shouldReactToTag == antagonistTag)
+            records.AddAntaRecord(Time.time, pos);
+    }
+
+    internal void ProtaNetworkCall()
+        => records.AddProtaNetworkCall(Time.time);
+    internal void AntaNetworkCall()
+        => records.AddAntaNetworkCall(Time.time);
 
     internal Records RequestRecordsRaw()
         => records;
@@ -40,24 +60,39 @@ public class AchievementManager : MonoBehaviour
 [System.Serializable]
 public class Records
 {
-    [SerializeField] List<float> protaRecords;
-    [SerializeField] List<float> antaRecords;
+    [System.Serializable]
+    public class Element
+    {
+        public float time;
+        public Vector3 pos;
+        public Element() : this(-1, -Vector3.one) { }
+        public Element(float time, Vector3 pos)
+        {
+            this.time = time;
+            this.pos = pos;
+        }
+    }
+    [SerializeField] List<Element> protaRecords;
+    [SerializeField] List<Element> antaRecords;
+    [SerializeField] List<float> protaNetworkCalls;
+    [SerializeField] List<float> antaNetworkCalls;
 
     public Records()
     {
-        protaRecords = new List<float>();
-        antaRecords = new List<float>();
-    }
-    public Records(List<float> protaRecords, List<float> antaRecords)
-    {
-        this.protaRecords = protaRecords;
-        this.antaRecords = antaRecords;
+        protaRecords = new List<Element>();
+        antaRecords = new List<Element>();
+        protaNetworkCalls = new List<float>();
+        antaNetworkCalls = new List<float>();
     }
 
-    public void AddProtaRecord(float record)
-        => protaRecords.Add(record);
-    public void AddAntaRecord(float record)
-        => antaRecords.Add(record);
+    public void AddProtaRecord(float record, Vector3 pos)
+        => protaRecords.Add(new Element(record, pos));
+    public void AddAntaRecord(float record, Vector3 pos)
+        => antaRecords.Add(new Element(record, pos));
+    public void AddProtaNetworkCall(float record)
+        => protaNetworkCalls.Add(record);
+    public void AddAntaNetworkCall(float record)
+        => antaNetworkCalls.Add(record);
 
     public string Format()
         => JsonUtility.ToJson(this);

@@ -1,5 +1,6 @@
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RemoteTest
 {
@@ -15,6 +16,9 @@ namespace RemoteTest
 
         [SerializeField] protected float angleThreshold = 1f;
         [SerializeField] protected Vector3 lastHeading;
+
+        [SerializeField] protected bool bCompensate;
+        public UnityAction OnNetworkCall;
 
         public Vector3 Velocity { get => rb.velocity; private set => pv.RPC(nameof(SetVelocity), RpcTarget.AllBufferedViaServer, value); }
         [PunRPC] protected void SetVelocity(Vector3 velocity) => rb.velocity = velocity;
@@ -53,6 +57,7 @@ namespace RemoteTest
         {
             if (accumulatedDeltaTime > desyncCheckEvery)
             {
+                OnNetworkCall?.Invoke();
                 accumulatedDeltaTime -= desyncCheckEvery;
                 pv.RPC(nameof(Sync), RpcTarget.AllBuffered, rb.velocity, rb.angularVelocity, transform.position, transform.rotation.eulerAngles);
             }
@@ -63,26 +68,29 @@ namespace RemoteTest
         {
             rb.velocity = v;
             rb.angularVelocity = av;
-            rb.position = p + rb.velocity * deltaTime;
-            rb.rotation = Quaternion.Euler(r + (rb.angularVelocity * deltaTime));
+            rb.position = bCompensate ? p + rb.velocity * deltaTime : p;
+            rb.rotation = bCompensate ? Quaternion.Euler(r) : Quaternion.Euler(r + (rb.angularVelocity * deltaTime));
         }
 
         protected virtual void DoOnCollisionEnter(Collision collision)
         {
             if (!pv.IsMine) return;
             pv.RPC(nameof(Sync), RpcTarget.AllBuffered, rb.velocity, rb.angularVelocity, transform.position, transform.rotation.eulerAngles);
+            OnNetworkCall?.Invoke();
         }
 
         public virtual void AddForce(Vector3 force, ForceMode forceMode = ForceMode.Force)
         {
             if (!pv.IsMine) return;
             pv.RPC(nameof(SyncForce), RpcTarget.AllBuffered, force, forceMode);
+            OnNetworkCall?.Invoke();
         }
 
         public virtual void AddTorque(Vector3 torque, ForceMode forceMode = ForceMode.Force)
         {
             if (!pv.IsMine) return;
             pv.RPC(nameof(SyncTorque), RpcTarget.AllBuffered, torque, forceMode);
+            OnNetworkCall?.Invoke();
         }
 
         public virtual void Teleport(Vector3 position, Quaternion rotation)
@@ -90,6 +98,7 @@ namespace RemoteTest
             if (!pv.IsMine) return;
             Position = position;
             Rotation = rotation;
+            OnNetworkCall?.Invoke();
         }
 
         public virtual void Stop()
@@ -97,12 +106,14 @@ namespace RemoteTest
             if (!pv.IsMine) return;
             Velocity = Vector3.zero;
             AngularVelocity = Vector3.zero;
+            OnNetworkCall?.Invoke();
         }
 
         public virtual void UseGravity(bool targetState)
         {
             if (!pv.IsMine) return;
             pv.RPC(nameof(SyncGravity), RpcTarget.AllBufferedViaServer, targetState);
+            OnNetworkCall?.Invoke();
         }
 
         [PunRPC]

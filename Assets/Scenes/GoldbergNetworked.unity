@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 533486}
   m_Layer: 0
   m_Name: PSpawnPosition
-  m_TagString: protagonist
+  m_TagString: protagonist_p
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1080,6 +1080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fde2a6d018995a4f9b1c6bac69b50cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawner: {fileID: 0}
   BtnSimulate: {fileID: 1720967541}
   pv: {fileID: 209600961}
 --- !u!114 &209600961
@@ -4827,7 +4828,7 @@ GameObject:
   - component: {fileID: 1246503885}
   m_Layer: 0
   m_Name: ASpawnPosition
-  m_TagString: antagonist
+  m_TagString: antagonist_p
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5976,15 +5977,15 @@ MonoBehaviour:
   ToSpawnPrefabsAtOriginGlobal: []
   ToSpawnPrefabsPositionSpecificGlobal:
   - {fileID: 5680358205019032878, guid: 2431ef1cd3797b249af36fe1e1a50ba0, type: 3}
+  - {fileID: 5603550395784408333, guid: f1dff6b0892944f4db3dd40f6679c5c4, type: 3}
+  - {fileID: 5603550395784408333, guid: 737935d4471d0514996ffb7b98912435, type: 3}
   PositionSpecifiersGlobal:
   - {fileID: 298917552}
-  ToSpawnPrefabsAtOriginLocal: []
-  ToSpawnPrefabsPositionSpecificLocal:
-  - {fileID: 5603550395784408333, guid: 545e88779932e3347a05a3555968509d, type: 3}
-  - {fileID: 5603550395784408333, guid: e41695c4c1f766d40aa377cf4125d96e, type: 3}
-  PositionSpecifiersLocal:
-  - {fileID: 1246503885}
   - {fileID: 533486}
+  - {fileID: 1246503885}
+  ToSpawnPrefabsAtOriginLocal: []
+  ToSpawnPrefabsPositionSpecificLocal: []
+  PositionSpecifiersLocal: []
 --- !u!114 &1469871049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8036,6 +8037,8 @@ MonoBehaviour:
   records:
     protaRecords: []
     antaRecords: []
+    protaNetworkCalls: []
+    antaNetworkCalls: []
   antagonistTag: antagonist
   protagonistTag: protagonist
 --- !u!4 &2080776853
