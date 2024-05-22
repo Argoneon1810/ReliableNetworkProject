@@ -99,6 +99,12 @@ namespace RemoteTest
             AngularVelocity = Vector3.zero;
         }
 
+        public virtual void UseGravity(bool targetState)
+        {
+            if (!pv.IsMine) return;
+            pv.RPC(nameof(SyncGravity), RpcTarget.AllBufferedViaServer, targetState);
+        }
+
         [PunRPC]
         protected virtual void Sync(Vector3 velocity, Vector3 angularVelocity, Vector3 position, Vector3 eulerRotation)
         {
@@ -119,5 +125,9 @@ namespace RemoteTest
         [PunRPC]
         protected virtual void SyncTorque(Vector3 torque, ForceMode forceMode = ForceMode.Force)
             => rb.AddTorque(torque, forceMode);
+
+        [PunRPC]
+        protected virtual void SyncGravity(bool targetState)
+            => rb.useGravity = targetState;
     }
 }

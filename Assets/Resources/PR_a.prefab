@@ -185,3 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 5603550395784408335}
   multiplier: 0.3
+  dir: {x: 0, y: 0, z: 0}
+  forceMultiplier: 0
+  antagonistTag: antagonist
+  protagonistTag: protagonist
