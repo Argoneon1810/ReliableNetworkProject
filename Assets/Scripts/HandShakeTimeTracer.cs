@@ -7,6 +7,7 @@ public class HandShakeTimeTracer : MonoBehaviour
     [SerializeField] PhotonView pv;
     bool received = true;
     float pre;
+    int t = 1;
 
     [SerializeField] float handShakeTime = 0;
     public float HandShakeTime { get => handShakeTime; set => pv.RPC(nameof(SetHandShakeTime), RpcTarget.AllBufferedViaServer, value); }
@@ -44,7 +45,7 @@ public class HandShakeTimeTracer : MonoBehaviour
         if (!pv.IsMine) return;
         received = true;
         float delta = Time.time - pre;
-        HandShakeTime = delta;
+        HandShakeTime = (HandShakeTime * 0.9f + delta * 0.1f) / (1 - Mathf.Pow(0.9f, t = ++t > 100 ? 100 : t));
         DebugLogger.Instance.Log("Network Delay: " + delta + "s");
     }
 }
