@@ -86,22 +86,16 @@ namespace NetworkedRigidbody
         {
             string extension = ".json";
             string path = Application.dataPath + "/Record_" + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_');
-            bool unsaved = true, useNumbering = false;
+            bool useNumbering = false;
             int i = 1;
-            while(unsaved)
+            if(File.Exists(path + extension))
             {
-                try
-                {
-                    using (BinaryWriter bw = new BinaryWriter(new FileStream(useNumbering ? path + string.Format(" ({0})", i) + extension : path + extension, FileMode.CreateNew)))
-                        bw.Write(AchievementManager.Instance.RequestRecords());
-                    unsaved = false;
-                }
-                catch (IOException e)
-                {
-                    useNumbering = true;
+                useNumbering = true;
+                while (File.Exists(useNumbering ? path + string.Format(" ({0})", i) + extension : path + extension))
                     i++;
-                }
             }
+            using (StreamWriter o = new StreamWriter(useNumbering ? path + string.Format(" ({0})", i) + extension : path + extension, false, Encoding.UTF8))
+                o.WriteLine(AchievementManager.Instance.RequestRecords());
         }
     }
 }

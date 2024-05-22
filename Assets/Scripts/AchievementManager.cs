@@ -47,9 +47,15 @@ public class AchievementManager : MonoBehaviour
     }
 
     internal void ProtaNetworkCall()
-        => records.AddProtaNetworkCall(Time.time);
+    {
+        if (Time.timeScale == 0) return;
+        records.AddProtaNetworkCall(Time.time);
+    }
     internal void AntaNetworkCall()
-        => records.AddAntaNetworkCall(Time.time);
+    {
+        if (Time.timeScale == 0) return;
+        records.AddAntaNetworkCall(Time.time);
+    }
 
     internal Records RequestRecordsRaw()
         => records;
